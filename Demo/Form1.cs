@@ -16,39 +16,50 @@ namespace Demo
 
             InitializeComponent();
 
-            PanelPageHost pphHost = new PanelPageHost();
-
-    
-        
-            var timeoutAdapter = new WinFormsPageTimeoutAdapter();
-
-            var timeoutService = new PageTimeoutController(timeoutAdapter, 15);
-             
-            PageNavBootstrap.Use(pphHost, new WinFormsPlatformAdapter())
-                .RegisterPagesFromAssembly(typeof(Form1).Assembly)
-                .Timeout(30)
-                .ConfigureServices(svc =>
-                {
-                    svc.Register<IPlatformAdapter>(new WinFormsPlatformAdapter());
-                    var adapter = svc.Get<IPlatformAdapter>();
-                    svc.Register(adapter.CreateEventDispatcher(pnHost));
-                    svc.Register(adapter.CreateTimerAdapter());
-                    svc.Register(adapter.CreateInteractionBlocker(pnHost));
-                    svc.Register(adapter.CreateEventSubscriber(pnHost));
-                    svc.Register(adapter.CreateInteractionObserverAdapter(pphHost));
-                    svc.Register<IPageTimeoutService>(timeoutService);
-
-                }).Start();
+            PanelPageHost pphHost = new PanelPageHost(pnHost);
 
 
-            PageRegistry.Register<PageA>();
-            PageRegistry.Register<PageB>();
-             
-            var ctx= WinFormsNavigationBootstrap.Initialize(pnHost, 30);
+
+
+            var ctx = PageNavBootstrap
+       .Use<WinFormsPlatformAdapter>(pphHost)
+       .RegisterPagesFromAssembly(typeof(Form1).Assembly)
+       .Timeout(40)
+       .ConfigureServices((services, plt) =>
+       {
+           // Register platform adapter itself
+       
+
+           // Register platform primitives
+           RegisterPrimitives(plt, services, pnHost, pphHost);
+
+           // Register factories / services (NOT instances)
+
+
+           services.Register<PageFactory>(
+               new PageFactory( ));
+       })
+       .Start();
+
+
+
+
             NavigationService.Initialize(ctx);
             NavigationService.SwitchPage<PageA>();
         }
-
+        public void RegisterPrimitives<TPlataform>(
+TPlataform platform,
+    ServiceLocator svc,
+    Control pnHost,
+    Control pphHost) where TPlataform : class, IPlatformAdapter
+        {
+            svc.Register(platform);
+            svc.Register(platform.CreateEventDispatcher(pnHost));
+            svc.Register(platform.CreateTimerAdapter());
+            svc.Register(platform.CreateInteractionBlocker(pnHost ));
+            svc.Register(platform.CreateEventSubscriber(pnHost ));
+            svc.Register(platform.CreateInteractionObserverAdapter(pnHost ));
+        }
         private async void button1_Click(object sender, EventArgs e)
         {
             await NavigationService.SwitchPage<PageB>();

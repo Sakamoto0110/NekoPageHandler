@@ -1,11 +1,13 @@
 ﻿// FILE: PageNav.Core/Services/NavigationService.cs
 using PageNav.Bootstrap;
 using PageNav.Contracts.Pages;
+using PageNav.Contracts.Runtime;
 using PageNav.Diagnostics;
 using PageNav.Metadata;
 using PageNav.Runtime;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PageNav.Core.Services
@@ -17,12 +19,12 @@ namespace PageNav.Core.Services
     public static partial class NavigationService
     {
         private static NavigationContext _context;
-
+        private static NavigationRuntime _runtime;
         // -------------------------------------------------------------------------
         // PUBLIC STATE
         // -------------------------------------------------------------------------
 
-        public static IPageView Current => _context?.Current;
+        public static IPageView Current => _runtime?.Current;
 
         // -------------------------------------------------------------------------
         // PUBLIC EVENTS (forwarded from context)
@@ -41,7 +43,7 @@ namespace PageNav.Core.Services
         private static int _attachedPages;
         private static int _visiblePages;
 
-
+         
         // -------------------------------------------------------------------------
         // INIT / SHUTDOWN
         // -------------------------------------------------------------------------
@@ -56,18 +58,21 @@ namespace PageNav.Core.Services
                     "NavigationService.Initialize called twice without Shutdown().");
 #endif
             _context = context;
-            WireContextEvents();
-            
-        }
+            _runtime = new NavigationRuntime(context);
 
+            WireRuntimeEvents();
+
+        }
+     
         public static async Task Shutdown()
         {
-            if (_context == null)
-                return;
+            if (_runtime != null)
+            {
+                UnwireRuntimeEvents();
+                await _runtime.DisposeAsync();
+                _runtime = null;
+            }
 
-            UnwireContextEvents();
-
-            await _context.DisposeAsync();
             _context = null;
         }
 
@@ -77,18 +82,18 @@ namespace PageNav.Core.Services
 
         public static Task SwitchPage<T>(object args = null)
             where T : IPageView
-            => Ensure().NavigateAsync(typeof(T), NavigationArgs.Default(args));
+            => EnsureRuntime().NavigateAsync(typeof(T), NavigationArgs.Default(args));
 
         public static Task SwitchPage(Type type, object args = null)
-            => Ensure().NavigateAsync(type, NavigationArgs.Default(args));
+            => EnsureRuntime().NavigateAsync(type, NavigationArgs.Default(args));
 
         public static Task SwitchTransient<T>(object args = null)
             where T : IPageView
-            => Ensure().NavigateAsync(typeof(T), NavigationArgs.Transient(args));
+            => EnsureRuntime().NavigateAsync(typeof(T), NavigationArgs.Transient(args));
 
         public static Task SwitchTransient(Type type, object args = null)
-            => Ensure().NavigateAsync(type, NavigationArgs.Transient(args));
-  
+            => EnsureRuntime().NavigateAsync(type, NavigationArgs.Transient(args));
+
         public static async Task GoHomeAsync(object args = null)
         {
             // This still relies on PageRegistry metadata (static is fine).
@@ -96,11 +101,11 @@ namespace PageNav.Core.Services
             if (desc == null)
                 return;
 
-            await Ensure().NavigateAsync(desc.PageType, NavigationArgs.Default(args));
+            await EnsureRuntime().NavigateAsync(desc.PageType, NavigationArgs.Default(args));
         }
 
         public static Task<bool> GoBackAsync()
-            => (Task<bool>)Ensure().GoBackAsync();
+            => (Task<bool>)EnsureRuntime().GoBackAsync();
          
 
 #if DEBUG
@@ -127,37 +132,35 @@ namespace PageNav.Core.Services
         // INTERNALS
         // -------------------------------------------------------------------------
 
-        private static NavigationContext Ensure()
+        private static NavigationRuntime EnsureRuntime()
         {
-            if (_context == null)
+            if (_runtime == null)
                 throw new InvalidOperationException(
                     "NavigationService.Initialize must be called first.");
 
-            return _context;
+            return _runtime;
         }
 
-        private static void WireContextEvents()
+        private static void WireRuntimeEvents()
         {
-            // Forward instance events to the static facade events.
-            _context.Navigating += OnNavigating;
-            _context.Navigated += OnNavigated;
-            _context.NavigationFailed += OnNavigationFailed;
-            _context.CurrentChanged += OnCurrentChanged;
-            _context.HistoryChanged += OnHistoryChanged;
+            _runtime.Navigating += OnNavigating;
+            _runtime.Navigated += OnNavigated;
+            _runtime.NavigationFailed += OnNavigationFailed;
+            _runtime.CurrentChanged += OnCurrentChanged;
+            _runtime.HistoryChanged += OnHistoryChanged;
 
-            // Timeout event forwarding is handled in NavigationService.Events.cs (OnTimeout)
-            _context.TimeoutReached += OnTimeout;
+            _runtime.TimeoutReached += OnTimeout;
         }
 
-        private static void UnwireContextEvents()
+        private static void UnwireRuntimeEvents()
         {
-            _context.TimeoutReached -= OnTimeout;
+            _runtime.TimeoutReached -= OnTimeout;
 
-            _context.Navigating -= OnNavigating;
-            _context.Navigated -= OnNavigated;
-            _context.NavigationFailed -= OnNavigationFailed;
-            _context.CurrentChanged -= OnCurrentChanged;
-            _context.HistoryChanged -= OnHistoryChanged;
+            _runtime.Navigating -= OnNavigating;
+            _runtime.Navigated -= OnNavigated;
+            _runtime.NavigationFailed -= OnNavigationFailed;
+            _runtime.CurrentChanged -= OnCurrentChanged;
+            _runtime.HistoryChanged -= OnHistoryChanged;
         }
 
         private static void OnNavigating(IPageView from, Type to, NavigationArgs args)

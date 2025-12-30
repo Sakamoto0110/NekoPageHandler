@@ -19,7 +19,7 @@ namespace PageNav.Core.Services
             if (_context == null)
                 return;
 
-            var current = _context.Current;
+            var current = _runtime.Current;
             PageDescriptor desc = null;
 
             try
@@ -44,7 +44,7 @@ namespace PageNav.Core.Services
                 var home = PageRegistry.ResolveTimeoutTarget();
                 if (home == null)
                     return;
-                await _context.NavigateAsync(home.PageType, NavigationArgs.Default());
+                await _runtime.NavigateAsync(home.PageType, NavigationArgs.Default());
                  
             }
             catch (Exception ex)

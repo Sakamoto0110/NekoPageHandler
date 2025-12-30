@@ -137,8 +137,17 @@ namespace PageNav.Runtime
 
         public static bool TryGetDescriptor(Type pageType, out PageDescriptor descriptor)
         {
+            if (pageType == null)
+            {
+                descriptor = null;
+
+                return false;
+            }
             lock(_lock)
-                return _byType.TryGetValue(pageType, out descriptor);
+                if(_byType.TryGetValue(pageType, out descriptor))
+                    return true;
+            descriptor = null;
+            return false;
         }
 
         public static PageDescriptor GetDescriptor(Type pageType)

@@ -20,19 +20,25 @@ namespace PageNav.Bootstrap
     public sealed class PageNavBootstrap
     {
         private readonly object _nativeHost;
-
+        private readonly IPlatformAdapter _platform;
         private Assembly _pagesAssembly;
         private Action<PageRegistryConfigurator> _pageConfig;
-        private Action<ServiceLocator> _serviceConfig;
+        private Action<ServiceLocator, IPlatformAdapter> _serviceConfig;
 
         private int _timeoutSeconds = 10;
 
+        private PageNavBootstrap(object nativeHost, IPlatformAdapter adapter)
+        {
+            if (nativeHost == null) throw new ArgumentNullException(nameof(nativeHost));
+            _nativeHost = nativeHost;
+            _platform = adapter;
+        }
         private PageNavBootstrap(object nativeHost)
         {
-            if(nativeHost == null) throw new ArgumentNullException(nameof(nativeHost));
+            if (nativeHost == null) throw new ArgumentNullException(nameof(nativeHost));
             _nativeHost = nativeHost;
+     
         }
-
         // --------------------------------------------------------------------
         // Entry points
         // --------------------------------------------------------------------
@@ -41,12 +47,14 @@ namespace PageNav.Bootstrap
         /// Use a specific platform adapter (WinForms/WPF/etc). You can call this multiple
         /// times across app startup, but resolution locks at first context creation.
         /// </summary>
-        public static PageNavBootstrap Use(object nativeHost, IPlatformAdapter adapter)
+        public static PageNavBootstrap Use<TPlataform>(object nativeHost) where TPlataform : IPlatformAdapter, new()
         {
-            if(adapter == null) throw new ArgumentNullException(nameof(adapter));
+            var adapter = new TPlataform();
             PlataformAdapter.Register(adapter);
-            return new PageNavBootstrap(nativeHost);
+             
+            return new PageNavBootstrap(nativeHost,adapter);
         }
+      
 
         /// <summary>
         /// If you already registered adapters manually, use this.
@@ -86,7 +94,7 @@ namespace PageNav.Bootstrap
         /// <summary>
         /// Optional: add/override services before ServiceLocator gets locked.
         /// </summary>
-        public PageNavBootstrap ConfigureServices(Action<ServiceLocator> configure)
+        public PageNavBootstrap ConfigureServices(Action<ServiceLocator,IPlatformAdapter> configure)
         {
             _serviceConfig = configure;
             return this;
@@ -110,12 +118,13 @@ namespace PageNav.Bootstrap
             var ctx = new NavigationContextBuilder()
                 .UseHost((IPageHost)_nativeHost)
                 .UseTimeout(_timeoutSeconds)
+                
                 .Build();
 
 
             // 4) Allow app to add extra services before lock
             if(_serviceConfig != null)
-                _serviceConfig(ctx.Services);
+                _serviceConfig(ctx.Services,_platform);
 
             // 5) Register context itself (handy for overlays / dialogs / DM extensions)
             ctx.Services.Register(ctx);

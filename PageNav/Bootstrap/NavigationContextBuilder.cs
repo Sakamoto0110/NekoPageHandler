@@ -38,7 +38,7 @@ namespace PageNav.Bootstrap
             return this;
         }
 
-        public NavigationContext Build()
+        public NavigationContext    Build()
         {
             if(_host == null)
                 throw new InvalidOperationException("IPageHost is required.");

@@ -26,7 +26,7 @@ namespace PageNav.WinForms.UIElements
 
 
         //public static explicit operator Panel(PanelPageHost host) => host._root;
-        public PanelPageHost() { }
+         
 
         public PanelPageHost(Panel root)
         {

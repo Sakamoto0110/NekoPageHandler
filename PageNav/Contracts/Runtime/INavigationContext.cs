@@ -16,17 +16,15 @@ namespace PageNav.Contracts.Runtime
 {
 
 
-    public interface INavigationContext : IDisposable
+    public interface INavigationContext  
     {
         IPageHost Host { get; }
-        IPageView Current { get; }
+        
 
         IPageOverlay Overlay { get; }
         IInteractionBlocker Blocker { get; }
-
-        Task NavigateAsync(Type pageType, NavigationArgs args = null);
-        Task GoBackAsync();
-        Task ResetAsync();
+ 
+         
     }
 
 }
