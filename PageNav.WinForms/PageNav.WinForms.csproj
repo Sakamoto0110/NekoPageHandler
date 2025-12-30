@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Multi-targeting -->
+    <TargetFrameworks>net481;net9.0-windows</TargetFrameworks>
+
+    <!-- Assembly info -->
+    <AssemblyName>PageNav.WinForms</AssemblyName>
+    <RootNamespace>PageNav.WinForms</RootNamespace>
+
+    <!-- Language / compiler behavior -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- WinForms -->
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <!-- Packaging-ready defaults -->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <!-- .NET Framework–specific tweaks -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net481'">
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;WINFORMS</DefineConstants>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- .NET 9 Windows–specific tweaks -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-windows'">
+    <DefineConstants>$(DefineConstants);NET;WINFORMS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- References -->
+  <ItemGroup>
+    <ProjectReference Include="..\PageNav\PageNav.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>
