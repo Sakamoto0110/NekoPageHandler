@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PageNav.Runtime
+namespace PageNav.Runtime.Registry
 {
     /// <summary>
     /// Static page metadata registry.

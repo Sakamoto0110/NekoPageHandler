@@ -28,17 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
+            label1 = new Label();
             SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Verdana", 32F, FontStyle.Bold);
+            label1.Location = new Point(0, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(216, 65);
+            label1.TabIndex = 1;
+            label1.Text = "Page1";
             // 
             // PageA
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Gold;
+            Controls.Add(label1);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "PageA";
+            Size = new Size(562, 543);
+            Controls.SetChildIndex(label1, 0);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label label1;
     }
 }

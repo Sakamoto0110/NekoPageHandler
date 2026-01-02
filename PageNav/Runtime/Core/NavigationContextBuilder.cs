@@ -4,13 +4,14 @@ using PageNav.Contracts.Runtime;
 using PageNav.Core.Services;
 using PageNav.Infrastructure;
 using PageNav.Runtime;
+using PageNav.Runtime.Factories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PageNav.Bootstrap
+namespace PageNav.Runtime.Core
 {
     public sealed class NavigationContextBuilder
     {
@@ -38,7 +39,7 @@ namespace PageNav.Bootstrap
             return this;
         }
 
-        public NavigationContext    Build()
+        public NavigationContext Build()
         {
             if(_host == null)
                 throw new InvalidOperationException("IPageHost is required.");
@@ -46,7 +47,7 @@ namespace PageNav.Bootstrap
             // Core-owned services
             _services.Register(_host);
             var pageFactory = new PageFactory();
-            _services.Register<PageFactory>(pageFactory);
+            _services.Register(pageFactory);
             var context = new NavigationContext(
                 _host,
                 _services,
@@ -59,4 +60,6 @@ namespace PageNav.Bootstrap
             return context;
         }
     }
-}
+
+
+ }

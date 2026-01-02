@@ -10,14 +10,13 @@ using PageNav.Contracts.Runtime;
 
 using PageNav.Core.Services;
 using PageNav.Diagnostics;
-using PageNav.Infrastructure;
 using PageNav.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PageNav.Runtime
+namespace PageNav.Runtime.Core
 {
     /// <summary>
     /// Passive container for navigation-scoped state and services.
@@ -32,8 +31,7 @@ namespace PageNav.Runtime
     /// - No lifecycle management
     /// - No event wiring
     /// - No platform interaction
-    /// </summary>
-    public sealed class NavigationContext
+     public sealed class NavigationContext
     {
         public IPageHost Host { get; }
         public ServiceLocator Services { get; }

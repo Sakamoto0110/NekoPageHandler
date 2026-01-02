@@ -1,7 +1,7 @@
 ﻿// FILE: PageNav.Core/Services/NavigationService.Events.cs
- using PageNav.Diagnostics;
+using PageNav.Diagnostics;
 using PageNav.Metadata;
-using PageNav.Runtime;
+using PageNav.Runtime.Registry;
 using System;
 using System.Threading.Tasks;
 

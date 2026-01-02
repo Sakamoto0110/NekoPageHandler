@@ -3,6 +3,8 @@ using PageNav.Contracts.Plataform;
 using PageNav.Contracts.Runtime;
 using PageNav.Core.Services;
 using PageNav.Runtime;
+using PageNav.Runtime.Core;
+using PageNav.Runtime.Lifecycle;
 using PageNav.WinForms.Adapters;
 using PageNav.WinForms.UIElements;
 using System;
@@ -14,7 +16,7 @@ using System.Windows.Forms;
 
 namespace PageNav.WinForms
 {
-    public static class WinFormsNavigationBootstrap
+    internal static class WinFormsNavigationBootstrap
     {
         public static NavigationContext Initialize(
             Control root,

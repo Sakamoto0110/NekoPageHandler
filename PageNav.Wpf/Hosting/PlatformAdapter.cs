@@ -11,7 +11,7 @@ using System.Windows.Controls;
 
 namespace PageNav.Wpf
 {
-    public class PlatformAdapter : IPlatformAdapter
+    public class PlatformAdapter : Contracts.Plataform.IPlatformAdapter
     {
         public bool CanHandle(object host) => host is System.Windows.Controls.Panel;
 

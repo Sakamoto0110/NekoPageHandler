@@ -4,7 +4,8 @@ using PageNav.Contracts.Pages;
 using PageNav.Contracts.Runtime;
 using PageNav.Diagnostics;
 using PageNav.Metadata;
-using PageNav.Runtime;
+using PageNav.Runtime.Core;
+using PageNav.Runtime.Registry;
 using System;
 using System.Linq;
 using System.Threading;
@@ -35,7 +36,6 @@ namespace PageNav.Core.Services
         public static event Action<IPageView, Type, Exception> NavigationFailed;
         public static event Action<IPageView> CurrentChanged;
         public static event Action HistoryChanged;
-
         public static event Action<IPageView> OnFirstPageAttached;
         public static event Action OnNoPageAttached;
         public static event Action OnNoPageVisible;

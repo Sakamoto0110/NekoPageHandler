@@ -1,8 +1,4 @@
-/// <summary>
-/// TODO: Document this type.
-/// Describe responsibility, lifecycle expectations,
-/// threading guarantees, and ownership rules.
-/// </summary>
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace PageNav.Contracts.Plataform
 {
+     
     /// <summary>
-    /// Dispatches execution to the platform's UI thread.
+    /// Dispatches actions onto the UI thread.
+    /// If already on UI thread, Invoke MUST execute inline.
+    /// Must be safe to call multiple times.
     /// </summary>
     public interface IEventDispatcherAdapter
     {
@@ -20,7 +19,6 @@ namespace PageNav.Contracts.Plataform
         /// Executes the action synchronously on the UI thread.
         /// </summary>
         void Invoke(Action action);
-
         /// <summary>
         /// Executes the action asynchronously on the UI thread.
         /// </summary>

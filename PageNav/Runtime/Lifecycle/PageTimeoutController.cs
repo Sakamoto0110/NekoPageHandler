@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PageNav.Runtime
+namespace PageNav.Runtime.Lifecycle
 {
     /// <summary>
     /// Context-scoped timeout controller.

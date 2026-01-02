@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 namespace PageNav.Contracts.Pages
 {
     /// <summary>
-    /// Indicates that a page supports background loading.
-    /// NavigationService will trigger background loading
-    /// but never manage threads directly.
+    /// Indicates that a page supports deferred/background loading.
     /// </summary>
     public interface IBackgroundLoadable
     {
         /// <summary>
-        /// Executed off the UI thread.
+        /// May be executed off the UI thread.
         /// Must NOT touch UI elements directly.
         /// </summary>
         Task LoadInBackgroundAsync(object args);

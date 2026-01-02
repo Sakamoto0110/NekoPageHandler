@@ -1,6 +1,6 @@
 ﻿using PageNav.Contracts.Pages;
 using PageNav.Metadata;
-using PageNav.Runtime;
+using PageNav.Runtime.Registry;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -15,7 +15,7 @@ namespace Demo
     [PageBehavior(
     kind: PageKind.Home,
     cachePolicy: PageCachePolicy.StrongSingleton)]
-    public partial class PageB : PageView
+    public partial class PageB : PageBase
     {
         public PageB()
         {

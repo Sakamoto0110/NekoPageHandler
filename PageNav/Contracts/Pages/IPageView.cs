@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static PageNav.Core.Services.NavigationService;
+ 
 
 namespace PageNav.Contracts.Pages
 {
@@ -23,14 +23,12 @@ namespace PageNav.Contracts.Pages
 
         bool IsDisposed { get; }
         bool DesignMode { get; }
-
-        Task OnNavigatedToAsync(NavigationArgs args);
-        Task OnNavigatedFromAsync();
-
-
     }
-  
 
+
+    /// <summary>
+    /// Optional lifecycle callbacks for pages.
+    /// </summary>
     public interface IPageLifecycle
     {
         /// <summary>

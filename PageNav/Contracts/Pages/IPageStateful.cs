@@ -1,4 +1,4 @@
-﻿// FILE: PageNav.Core/Abstractions/IPageStateful.cs
+﻿ 
 namespace PageNav.Contracts.Pages
 {
     /// <summary>

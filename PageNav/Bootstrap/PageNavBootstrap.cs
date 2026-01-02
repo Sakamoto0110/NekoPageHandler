@@ -2,6 +2,9 @@
 using PageNav.Contracts.Plataform;
 using PageNav.Infrastructure;
 using PageNav.Runtime;
+using PageNav.Runtime.Core;
+using PageNav.Runtime.Factories;
+using PageNav.Runtime.Registry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +46,51 @@ namespace PageNav.Bootstrap
         // Entry points
         // --------------------------------------------------------------------
 
+        public static NavigationContext Initialize<TPlataform>(IPageHost host) where TPlataform : IPlatformAdapter, new() => Initialize(new TPlataform(), host); 
+        
+
+        public static NavigationContext Initialize(
+        IPlatformAdapter platform,
+        IPageHost host)
+        {
+            if (platform == null)
+                throw new ArgumentNullException(nameof(platform));
+
+            if (host == null)
+                throw new ArgumentNullException(nameof(host));
+
+            // ------------------------------------------------------------
+            // Platform (HARD REQUIREMENT)
+            // ------------------------------------------------------------
+            PlatformRegistry.Register(platform);
+
+            // ------------------------------------------------------------
+            // Services
+            // ------------------------------------------------------------
+            var services = new ServiceLocator();
+
+            // Platform-provided services
+            services.Register(typeof(IEventDispatcherAdapter), platform.CreateEventDispatcher(host));
+            services.Register(typeof(IInteractionBlocker), platform.CreateInteractionBlocker(host));
+            services.Register(typeof(ITimerAdapter), platform.CreateTimerAdapter());
+
+            // Runtime services
+            services.Register(typeof(PageFactory), new PageFactory());
+
+            // ------------------------------------------------------------
+            // Lock services (NO MORE REGISTRATION)
+            // ------------------------------------------------------------
+            services.Lock();
+
+            // ------------------------------------------------------------
+            // Context
+            // ------------------------------------------------------------
+            return new NavigationContext(
+                host: host,
+                services: services,TimeSpan.FromSeconds(10)
+            );
+        }
+
         /// <summary>
         /// Use a specific platform adapter (WinForms/WPF/etc). You can call this multiple
         /// times across app startup, but resolution locks at first context creation.
@@ -50,7 +98,7 @@ namespace PageNav.Bootstrap
         public static PageNavBootstrap Use<TPlataform>(object nativeHost) where TPlataform : IPlatformAdapter, new()
         {
             var adapter = new TPlataform();
-            PlataformAdapter.Register(adapter);
+            PlatformRegistry.Register(adapter);
              
             return new PageNavBootstrap(nativeHost,adapter);
         }

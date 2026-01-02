@@ -1,9 +1,10 @@
 ﻿// FILE: PageNav.Core/Services/PageFactory.cs
 using PageNav.Contracts.Pages;
+using PageNav.Runtime.Registry;
 using System;
 using System.Collections.Generic;
 
-namespace PageNav.Runtime
+namespace PageNav.Runtime.Factories
 {
     /// <summary>
     /// Responsible ONLY for creating page instances.

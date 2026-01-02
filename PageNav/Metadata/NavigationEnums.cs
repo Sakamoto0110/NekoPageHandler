@@ -49,7 +49,11 @@ namespace PageNav.Metadata
         /// <summary>
         /// Multiple instances stacked (push/pop behavior).
         /// </summary>
-        Stackable = 8
+        Stackable = 8,
+        /// <summary>
+        /// Force page to be disposed when cleaned up.
+        /// </summary>
+        ForceDispose = 16
     }
 
     // ============================================================

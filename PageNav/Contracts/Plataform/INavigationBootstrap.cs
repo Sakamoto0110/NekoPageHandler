@@ -1,4 +1,4 @@
-﻿using PageNav.Runtime;
+﻿using PageNav.Runtime.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
