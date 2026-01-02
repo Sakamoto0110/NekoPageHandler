@@ -1,4 +1,5 @@
-﻿using PageNav.Metadata;
+﻿using PageNav.Contracts.Pages;
+using PageNav.Metadata;
 using PageNav.WinForms;
 using PageNav.WinForms.UIElements;
 using System;
@@ -16,11 +17,24 @@ namespace Demo
     [PageBehavior(
     kind: PageKind.Default,
     cachePolicy: PageCachePolicy.StrongSingleton)]
-    public partial class PageA : PageView
+    public partial class MarketplacePage : PageView, IPageResources
     {
-        public PageA()
+        public MarketplacePage()
         {
             InitializeComponent();
+        }
+
+        public Task LoadResourcesAsync()
+        {
+            Console.WriteLine("Loading marketplace");
+            
+
+            return Task.CompletedTask;
+        }
+
+        public Task ReleaseResourcesAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }

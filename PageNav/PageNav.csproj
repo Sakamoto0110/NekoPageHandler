@@ -37,12 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="old\Core\Abstractions\" />
-	  <Folder Include="old\Core\Bootstrap\" />
-	  <Folder Include="old\Core\Infrastructure\" />
-	  <Folder Include="old\Core\Models\" />
-	  <Folder Include="old\Core\Services\" />
-	  <Folder Include="old\Diagnostics\" />
+	  <Compile Remove="old\**" />
+	  <EmbeddedResource Remove="old\**" />
+	  <None Remove="old\**" />
 	</ItemGroup>
 
 	 
